@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduTrack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(-45deg,#020617,#0f172a,#1e3a8a,#312e81);
+background-size:400% 400%;
+animation:bg 12s ease infinite;
+color:white;
+min-height:100vh;
+padding:20px;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.container{
+max-width:1400px;
+margin:auto;
+animation:fade 1s ease;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+nav{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:20px;
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.1);
+backdrop-filter:blur(20px);
+border-radius:20px;
+margin-bottom:25px;
+box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+
+.logo{
+font-size:28px;
+font-weight:700;
+background:linear-gradient(to right,#38bdf8,#a855f7);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.mode-btn{
+padding:10px 18px;
+border:none;
+border-radius:12px;
+background:linear-gradient(to right,#38bdf8,#818cf8);
+color:white;
+cursor:pointer;
+font-weight:600;
+}
+
+.dashboard{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
+margin-bottom:25px;
+}
+
+.card{
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.1);
+backdrop-filter:blur(20px);
+border-radius:24px;
+padding:25px;
+box-shadow:0 8px 32px rgba(0,0,0,0.3);
+transition:0.4s;
+}
+
+.card:hover{
+transform:translateY(-8px) scale(1.02);
+}
+
+.card h3{
+color:#cbd5e1;
+margin-bottom:10px;
+}
+
+.card h1{
+font-size:42px;
+color:#38bdf8;
+}
+
+.main{
+display:grid;
+grid-template-columns:1fr 2fr;
+gap:25px;
+}
+
+.panel{
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.1);
+backdrop-filter:blur(20px);
+border-radius:24px;
+padding:25px;
+box-shadow:0 8px 32px rgba(0,0,0,0.3);
+}
+
+.title{
+font-size:28px;
+margin-bottom:20px;
+color:#38bdf8;
+}
+
+input{
+width:100%;
+padding:15px;
+margin-bottom:15px;
+border:none;
+border-radius:14px;
+background:rgba(255,255,255,0.1);
+color:white;
+font-size:15px;
+outline:none;
+}
+
+input::placeholder{
+color:#cbd5e1;
+}
+
+.main-btn{
+width:100%;
+padding:15px;
+border:none;
+border-radius:14px;
+background:linear-gradient(to right,#38bdf8,#8b5cf6);
+color:white;
+font-size:16px;
+font-weight:600;
+cursor:pointer;
+transition:0.3s;
+}
+
+.main-btn:hover{
+transform:scale(1.03);
+}
+
+.search{
+margin-bottom:20px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+overflow:hidden;
+border-radius:18px;
+}
+
+th,td{
+padding:15px;
+text-align:center;
+}
+
+th{
+background:rgba(56,189,248,0.2);
+color:#38bdf8;
+}
+
+tr{
+background:rgba(255,255,255,0.05);
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.avatar{
+width:42px;
+height:42px;
+border-radius:50%;
+}
+
+.action-btn{
+padding:8px 12px;
+border:none;
+border-radius:10px;
+margin:3px;
+color:white;
+cursor:pointer;
+}
+
+.edit{
+background:#22c55e;
+}
+
+.delete{
+background:#ef4444;
+}
+
+.chart-box{
+margin-top:25px;
+}
+
+footer{
+text-align:center;
+padding:30px;
+color:#cbd5e1;
+}
+
+.light{
+background:#f1f5f9;
+color:#0f172a;
+}
+
+.light .card,
+.light .panel,
+.light nav{
+background:white;
+color:black;
+}
+
+.light input{
+background:#e2e8f0;
+color:black;
+}
+
+@media(max-width:950px){
+.main{
+grid-template-columns:1fr;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<nav>
+<div class="logo">EduTrack</div>
+<button class="mode-btn" onclick="toggleMode()">Dark / Light</button>
+</nav>
+
+<div class="dashboard">
+<div class="card">
+<h3>Total Students</h3>
+<h1 id="totalStudents">0</h1>
+</div>
+
+<div class="card">
+<h3>Average Marks</h3>
+<h1 id="avgMarks">0%</h1>
+</div>
+
+<div class="card">
+<h3>Attendance</h3>
+<h1>95%</h1>
+</div>
+
+<div class="card">
+<h3>Performance</h3>
+<h1>Excellent</h1>
+</div>
+</div>
+
+<div class="main">
+
+<div class="panel">
+<h2 class="title">Add Student</h2>
+
+<input type="text" id="name" placeholder="Enter Student Name">
+<input type="number" id="age" placeholder="Enter Age">
+<input type="text" id="course" placeholder="Enter Course">
+<input type="number" id="marks" placeholder="Enter Marks">
+<input type="number" id="fees" placeholder="Enter Fees Amount">
+
+<button class="main-btn" onclick="addStudent()">Add Student</button>
+
+<div class="chart-box">
+<canvas id="myChart"></canvas>
+</div>
+
+</div>
+
+<div class="panel">
+<h2 class="title">Student Records</h2>
+
+<input type="text" id="search" class="search" placeholder="Search Student..." onkeyup="searchStudent()">
+
+<table>
+<thead>
+<tr>
+<th>Photo</th>
+<th>Name</th>
+<th>Age</th>
+<th>Course</th>
+<th>Marks</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="studentTable"></tbody>
+</table>
+
+</div>
+
+</div>
+
+<div class="dashboard" style="margin-top:25px;">
+<div class="card">
+<h3>Total Fees</h3>
+<h1 id="totalFees">₹0</h1>
+</div>
+
+<div class="card">
+<h3>Pending Fees</h3>
+<h1 id="pendingFees">₹0</h1>
+</div>
+
+<div class="card">
+<h3>Present Today</h3>
+<h1 id="presentToday">0</h1>
+</div>
+
+<div class="card">
+<h3 id="clock">00:00:00</h3>
+<h1>Live Time</h1>
+</div>
+</div>
+
+<div class="panel" style="margin-top:25px;">
+<h2 class="title">Attendance & Fee Management</h2>
+
+<table>
+<thead>
+<tr>
+<th>Student ID</th>
+<th>Status</th>
+<th>Fees</th>
+<th>Payment</th>
+</tr>
+</thead>
+
+<tbody id="managementTable"></tbody>
+</table>
+</div>
+
+<div class="panel" style="margin-top:25px;">
+<h2 class="title">Quick Actions</h2>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;">
+<button class="main-btn" onclick="window.print()">Download PDF</button>
+<button class="main-btn" onclick="showNotification()">Show Notification</button>
+<button class="main-btn" onclick="clearAllStudents()">Clear Records</button>
+<button class="main-btn" onclick="showWelcome()">Welcome Popup</button>
+</div>
+</div>
+
+<footer>
+Made with ❤️ by Kashish • EduTrack
+</footer>
+
+</div>
+
+<script>
+
+let students = JSON.parse(localStorage.getItem('students')) || [];
+
+function saveData(){
+localStorage.setItem('students', JSON.stringify(students));
+}
+
+function addStudent(){
+
+const name = document.getElementById('name').value;
+const age = document.getElementById('age').value;
+const course = document.getElementById('course').value;
+const marks = document.getElementById('marks').value;
+const fees = document.getElementById('fees').value;
+
+if(name === '' || age === '' || course === '' || marks === '' || fees === ''){
+alert('Please fill all fields');
+return;
+}
+
+const student = {
+name:name,
+age:age,
+course:course,
+marks:Number(marks),
+fees:Number(fees),
+status: Math.random() > 0.3 ? 'Present' : 'Absent',
+payment: Math.random() > 0.5 ? 'Paid' : 'Pending',
+image:'https://i.pravatar.cc/40?img=' + Math.floor(Math.random()*70)
+};
+
+students.push(student);
+
+saveData();
+
+displayStudents(students);
+updateDashboard();
+updateChart();
+clearFields();
+
+alert('Student Added Successfully 🚀');
+}
+
+function displayStudents(data){
+
+const table = document.getElementById('studentTable');
+
+if(!table) return;
+
+table.innerHTML = '';
+
+data.forEach((student,index)=>{
+
+table.innerHTML += `
+<tr>
+<td><img src="${student.image}" class="avatar"></td>
+<td>${student.name}</td>
+<td>${student.age}</td>
+<td>${student.course}</td>
+<td>${student.marks}%</td>
+<td>
+<button class="action-btn edit" onclick="editStudent(${index})">Edit</button>
+<button class="action-btn delete" onclick="deleteStudent(${index})">Delete</button>
+</td>
+</tr>
+`;
+
+});
+}
+
+function editStudent(index){
+
+const student = students[index];
+
+document.getElementById('name').value = student.name;
+document.getElementById('age').value = student.age;
+document.getElementById('course').value = student.course;
+document.getElementById('marks').value = student.marks;
+document.getElementById('fees').value = student.fees;
+
+students.splice(index,1);
+
+saveData();
+
+displayStudents(students);
+updateDashboard();
+updateChart();
+}
+
+function deleteStudent(index){
+
+students.splice(index,1);
+
+saveData();
+
+displayStudents(students);
+updateDashboard();
+updateChart();
+}
+
+function updateDashboard(){
+
+let totalMarks = 0;
+let totalFees = 0;
+let pendingFees = 0;
+let presentCount = 0;
+
+students.forEach(student=>{
+
+const marks = Number(student.marks) || 0;
+const fees = Number(student.fees) || 0;
+
+totalMarks += marks;
+totalFees += fees;
+
+if(student.payment === 'Pending'){
+pendingFees += fees;
+}
+
+if(student.status === 'Present'){
+presentCount++;
+}
+
+});
+
+const average = students.length
+? (totalMarks / students.length).toFixed(1)
+: 0;
+
+const totalStudents = document.getElementById('totalStudents');
+const avgMarks = document.getElementById('avgMarks');
+const totalFeesBox = document.getElementById('totalFees');
+const pendingFeesBox = document.getElementById('pendingFees');
+const presentToday = document.getElementById('presentToday');
+
+if(totalStudents) totalStudents.innerText = students.length;
+if(avgMarks) avgMarks.innerText = average + '%';
+if(totalFeesBox) totalFeesBox.innerText = '₹' + totalFees;
+if(pendingFeesBox) pendingFeesBox.innerText = '₹' + pendingFees;
+if(presentToday) presentToday.innerText = presentCount;
+
+updateManagementTable();
+}
+
+function updateManagementTable(){
+
+const table = document.getElementById('managementTable');
+
+if(!table) return;
+
+table.innerHTML = '';
+
+students.forEach((student,index)=>{
+
+const statusColor = student.status === 'Present'
+? '#22c55e'
+: '#ef4444';
+
+const paymentColor = student.payment === 'Paid'
+? '#22c55e'
+: '#ef4444';
+
+table.innerHTML += `
+<tr>
+<td>ST${100 + index}</td>
+<td style="color:${statusColor}">${student.status}</td>
+<td>₹${student.fees}</td>
+<td style="color:${paymentColor}">${student.payment}</td>
+</tr>
+`;
+
+});
+}
+
+function clearFields(){
+
+document.getElementById('name').value = '';
+document.getElementById('age').value = '';
+document.getElementById('course').value = '';
+document.getElementById('marks').value = '';
+document.getElementById('fees').value = '';
+}
+
+function searchStudent(){
+
+const value = document.getElementById('search').value.toLowerCase();
+
+const filtered = students.filter(student =>
+student.name.toLowerCase().includes(value)
+);
+
+displayStudents(filtered);
+}
+
+function toggleMode(){
+document.body.classList.toggle('light');
+}
+
+function showNotification(){
+alert('System Running Successfully 🚀');
+}
+
+function showWelcome(){
+alert('Welcome to Premium Student Dashboard ✨');
+}
+
+function clearAllStudents(){
+
+if(confirm('Delete all student records?')){
+
+students = [];
+localStorage.removeItem('students');
+
+displayStudents(students);
+updateDashboard();
+updateChart();
+}
+}
+
+setInterval(()=>{
+
+const clock = document.getElementById('clock');
+
+if(clock){
+clock.innerHTML = new Date().toLocaleTimeString();
+}
+
+},1000);
+
+const ctx = document.getElementById('myChart');
+
+let chart;
+
+if(ctx){
+chart = new Chart(ctx,{
+type:'bar',
+data:{
+labels:[],
+datasets:[{
+label:'Student Marks',
+data:[],
+borderWidth:1
+}]
+},
+options:{
+responsive:true
+}
+});
+}
+
+function updateChart(){
+
+if(!chart) return;
+
+chart.data.labels = students.map(student => student.name);
+chart.data.datasets[0].data = students.map(student => student.marks);
+chart.update();
+}
+
+displayStudents(students);
+updateDashboard();
+updateChart();
+
+</script>
+
+</body>
+</html>

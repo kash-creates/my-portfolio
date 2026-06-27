@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ResumeForge AI</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#f5ede3,#d2b48c);
+padding:30px;
+transition:0.5s;
+}
+
+.container{
+max-width:1400px;
+margin:auto;
+}
+
+.header{
+background:rgba(255,255,255,0.6);
+padding:25px;
+border-radius:25px;
+margin-bottom:25px;
+backdrop-filter:blur(10px);
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+.header h1{
+font-size:45px;
+color:#4b2e2e;
+}
+
+.header p{
+color:#7b5e57;
+margin-top:5px;
+}
+
+.main{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+}
+
+.form-section,
+.resume-section{
+background:rgba(255,255,255,0.6);
+padding:25px;
+border-radius:25px;
+backdrop-filter:blur(10px);
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+}
+
+input,
+textarea{
+width:100%;
+padding:15px;
+margin-bottom:15px;
+border:none;
+border-radius:15px;
+background:rgba(255,255,255,0.8);
+font-size:15px;
+outline:none;
+}
+
+textarea{
+height:120px;
+resize:none;
+}
+
+button{
+padding:14px 22px;
+border:none;
+border-radius:14px;
+cursor:pointer;
+font-weight:600;
+margin:5px;
+transition:0.3s;
+background:#8b5e3c;
+color:white;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+.template-buttons{
+display:flex;
+flex-wrap:wrap;
+}
+
+.resume-card{
+background:white;
+padding:30px;
+border-radius:20px;
+}
+
+.profile{
+display:flex;
+align-items:center;
+gap:20px;
+margin-bottom:20px;
+}
+
+.profile img{
+width:110px;
+height:110px;
+border-radius:50%;
+object-fit:cover;
+border:5px solid #d2b48c;
+}
+
+.resume-card h1{
+font-size:40px;
+color:#4b2e2e;
+}
+
+.resume-card h3{
+color:#7b5e57;
+}
+
+.section{
+margin-top:25px;
+}
+
+.section h2{
+margin-bottom:10px;
+padding-bottom:8px;
+border-bottom:2px solid #ddd;
+color:#4b2e2e;
+}
+
+.skill{
+margin-bottom:12px;
+}
+
+.skill-bar{
+height:12px;
+background:#ddd;
+border-radius:20px;
+overflow:hidden;
+}
+
+.skill-fill{
+height:100%;
+width:80%;
+background:linear-gradient(to right,#8b5e3c,#d2b48c);
+}
+
+.ats-box{
+background:white;
+padding:20px;
+border-radius:20px;
+margin-top:20px;
+}
+
+.ats-bar{
+width:100%;
+height:20px;
+background:#ddd;
+border-radius:20px;
+overflow:hidden;
+margin-top:10px;
+}
+
+#atsFill{
+height:100%;
+width:0%;
+background:linear-gradient(to right,#8b5e3c,#d2b48c);
+transition:1s;
+}
+
+.footer{
+text-align:center;
+margin-top:30px;
+padding:20px;
+font-weight:600;
+color:#4b2e2e;
+}
+
+@media(max-width:900px){
+
+.main{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>ResumeForge AI</h1>
+<p>Ultra Premium Resume Builder</p>
+</div>
+
+<div class="main">
+
+<!-- FORM -->
+
+<div class="form-section">
+
+<h2>Build Your Resume</h2>
+
+<input type="text" id="name" placeholder="Full Name" onkeyup="updateResume()">
+
+<input type="text" id="profession" placeholder="Profession" onkeyup="updateResume()">
+
+<input type="email" id="email" placeholder="Email" onkeyup="updateResume()">
+
+<input type="text" id="phone" placeholder="Phone Number" onkeyup="updateResume()">
+
+<input type="text" id="location" placeholder="Location" onkeyup="updateResume()">
+
+<textarea id="summary" placeholder="Professional Summary" onkeyup="updateResume()"></textarea>
+
+<input type="text" id="skills" placeholder="Skills (HTML, CSS, JavaScript)" onkeyup="updateResume()">
+
+<textarea id="experience" placeholder="Experience" onkeyup="updateResume()"></textarea>
+
+<input type="file" id="imageUpload" accept="image/*">
+
+<button onclick="generateAISummary()">
+Generate AI Summary
+</button>
+
+<button onclick="showSuggestion()">
+AI Suggestions
+</button>
+
+<button onclick="downloadPDF()">
+Download Resume
+</button>
+
+<div class="template-buttons">
+
+<button onclick="changeTheme('#f5ede3','#4b2e2e')">
+Classic
+</button>
+
+<button onclick="changeTheme('#1e1e1e','#ffffff')">
+Dark
+</button>
+
+<button onclick="changeTheme('#e8f0ff','#003366')">
+Blue
+</button>
+
+</div>
+
+<div class="ats-box">
+
+<h3>ATS Resume Score</h3>
+
+<div class="ats-bar">
+<div id="atsFill"></div>
+</div>
+
+<p id="atsText">0%</p>
+
+</div>
+
+</div>
+
+<!-- RESUME -->
+
+<div class="resume-section">
+
+<div class="resume-card">
+
+<div class="profile">
+
+<img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="profileImage">
+
+<div>
+<h1 id="rName">Your Name</h1>
+<h3 id="rProfession">Profession</h3>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>Contact</h2>
+
+<p id="rEmail">example@gmail.com</p>
+<p id="rPhone">9876543210</p>
+<p id="rLocation">Location</p>
+
+</div>
+
+<div class="section">
+
+<h2>Professional Summary</h2>
+
+<p id="rSummary">
+Your professional summary will appear here.
+</p>
+
+</div>
+
+<div class="section">
+
+<h2>Skills</h2>
+
+<div id="skillsContainer"></div>
+
+</div>
+
+<div class="section">
+
+<h2>Experience</h2>
+
+<p id="rExperience">
+Your experience details here.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+Made with ❤️ by Kashish • ResumeForge AI • Ultra Premium Resume Builder
+</div>
+
+</div>
+
+<script>
+
+// ================= UPDATE RESUME =================
+
+function updateResume(){
+
+document.getElementById('rName').innerText =
+document.getElementById('name').value || 'Your Name';
+
+document.getElementById('rProfession').innerText =
+document.getElementById('profession').value || 'Profession';
+
+document.getElementById('rEmail').innerText =
+document.getElementById('email').value || 'example@gmail.com';
+
+document.getElementById('rPhone').innerText =
+document.getElementById('phone').value || '9876543210';
+
+document.getElementById('rLocation').innerText =
+document.getElementById('location').value || 'Location';
+
+document.getElementById('rSummary').innerText =
+document.getElementById('summary').value || 'Professional Summary';
+
+document.getElementById('rExperience').innerText =
+document.getElementById('experience').value || 'Experience Details';
+
+let skills =
+document.getElementById('skills').value.split(',');
+
+let container =
+document.getElementById('skillsContainer');
+
+container.innerHTML = '';
+
+skills.forEach(skill=>{
+
+if(skill.trim()!==''){
+
+container.innerHTML += `
+
+<div class="skill">
+
+<p>${skill}</p>
+
+<div class="skill-bar">
+<div class="skill-fill"></div>
+</div>
+
+</div>
+
+`;
+
+}
+
+});
+
+calculateATS();
+
+}
+
+// ================= IMAGE UPLOAD =================
+
+document.getElementById('imageUpload')
+.addEventListener('change',function(e){
+
+const reader = new FileReader();
+
+reader.onload = function(){
+
+document.getElementById('profileImage').src =
+reader.result;
+
+}
+
+reader.readAsDataURL(e.target.files[0]);
+
+});
+
+// ================= AI SUMMARY =================
+
+function generateAISummary(){
+
+let profession =
+document.getElementById('profession').value.toLowerCase();
+
+let summary = '';
+
+if(profession.includes('developer')){
+
+summary =
+'Creative and detail-oriented Web Developer skilled in HTML, CSS, JavaScript, React, and responsive design. Passionate about building modern user-friendly applications and solving technical problems.';
+
+}
+
+else if(profession.includes('teacher')){
+
+summary =
+'Dedicated Teacher with strong communication and classroom management skills. Experienced in creating engaging learning environments and supporting student growth.';
+
+}
+
+else if(profession.includes('bca')){
+
+summary =
+'Motivated BCA student with knowledge of programming, web development, and database management. Passionate about learning new technologies and building innovative projects.';
+
+}
+
+else if(profession.includes('bsc')){
+
+summary =
+'Hardworking BSc student with analytical thinking and problem-solving abilities. Interested in research, innovation, and continuous learning.';
+
+}
+
+else if(profession.includes('mba')){
+
+summary =
+'Professional MBA graduate with leadership, management, and strategic planning skills. Experienced in teamwork, communication, and business operations.';
+
+}
+
+else if(profession.includes('designer')){
+
+summary =
+'Creative UI/UX Designer passionate about designing modern user experiences and visually appealing interfaces using Figma and design principles.';
+
+}
+
+else if(profession.includes('doctor')){
+
+summary =
+'Compassionate healthcare professional dedicated to patient care, diagnosis, and medical excellence with strong communication and clinical skills.';
+
+}
+
+else if(profession.includes('nurse')){
+
+summary =
+'Caring and responsible nurse skilled in patient care, teamwork, and healthcare support with dedication to medical excellence.';
+
+}
+
+else if(profession.includes('engineer')){
+
+summary =
+'Innovative engineer with strong technical knowledge, problem-solving skills, and passion for developing efficient and modern solutions.';
+
+}
+
+else if(profession.includes('accountant')){
+
+summary =
+'Detail-oriented accountant skilled in financial reporting, taxation, budgeting, and maintaining accurate financial records.';
+
+}
+
+else if(profession.includes('marketing')){
+
+summary =
+'Creative marketing professional skilled in branding, social media strategy, communication, and audience engagement.';
+
+}
+
+else if(profession.includes('lawyer')){
+
+summary =
+'Professional lawyer with strong analytical, legal research, and communication skills dedicated to delivering effective legal solutions.';
+
+}
+
+else{
+
+summary =
+'Motivated professional with strong communication, teamwork, and problem-solving skills dedicated to achieving career growth and excellence.';
+
+}
+
+document.getElementById('summary').value =
+summary;
+
+updateResume();
+
+alert('AI Summary Generated 🚀');
+
+}
+
+// ================= AI SUGGESTIONS =================
+
+function showSuggestion(){
+
+let profession =
+document.getElementById('profession').value.toLowerCase();
+
+let message = '';
+
+if(profession.includes('developer')){
+
+message =
+'• Add GitHub projects\n• Mention React & JavaScript\n• Include problem-solving skills';
+
+}
+
+else if(profession.includes('teacher')){
+
+message =
+'• Mention teaching methods\n• Add classroom achievements\n• Include communication skills';
+
+}
+
+else if(profession.includes('bca')){
+
+message =
+'• Add coding projects\n• Mention programming languages\n• Include internships';
+
+}
+
+else if(profession.includes('bsc')){
+
+message =
+'• Add research work\n• Mention analytical skills\n• Include certifications';
+
+}
+
+else if(profession.includes('mba')){
+
+message =
+'• Add leadership skills\n• Mention management experience\n• Include teamwork achievements';
+
+}
+
+else if(profession.includes('designer')){
+
+message =
+'• Add portfolio links\n• Mention Figma/Canva\n• Showcase creativity';
+
+}
+
+else if(profession.includes('doctor')){
+
+message =
+'• Add clinical experience\n• Mention patient care\n• Include certifications';
+
+}
+
+else if(profession.includes('engineer')){
+
+message =
+'• Add technical projects\n• Mention software/tools\n• Include innovation skills';
+
+}
+
+else{
+
+message =
+'• Keep resume ATS-friendly\n• Add achievements\n• Mention strong skills';
+
+}
+
+alert(message);
+
+}
+
+// ================= ATS SCORE =================
+
+function calculateATS(){
+
+let score = 0;
+
+let name =
+document.getElementById('name').value.trim();
+
+let profession =
+document.getElementById('profession').value.trim();
+
+let email =
+document.getElementById('email').value.trim();
+
+let skills =
+document.getElementById('skills').value.trim();
+
+let summary =
+document.getElementById('summary').value.trim();
+
+let experience =
+document.getElementById('experience').value.trim();
+
+if(name.length > 2) score += 10;
+
+if(profession.length > 3) score += 10;
+
+if(email.includes('@')) score += 10;
+
+let skillsCount =
+skills.split(',').length;
+
+if(skillsCount >= 3){
+
+score += 20;
+
+}
+else if(skillsCount >= 1){
+
+score += 10;
+
+}
+
+if(summary.length > 80){
+
+score += 20;
+
+}
+else if(summary.length > 30){
+
+score += 10;
+
+}
+
+if(experience.length > 100){
+
+score += 20;
+
+}
+else if(experience.length > 40){
+
+score += 10;
+
+}
+
+if(score > 100){
+
+score = 100;
+
+}
+
+document.getElementById('atsFill').style.width =
+score + '%';
+
+document.getElementById('atsText').innerText =
+score + '% ATS Score';
+
+}
+
+// ================= THEMES =================
+
+function changeTheme(bg,color){
+
+document.body.style.background = bg;
+
+document.body.style.color = color;
+
+}
+
+// ================= PDF =================
+
+function downloadPDF(){
+
+window.print();
+
+}
+
+</script>
+
+</body>
+</html>
